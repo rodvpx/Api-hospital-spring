@@ -2,11 +2,9 @@ package rodvpx.com.github.apihospitalspring.service;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import rodvpx.com.github.apihospitalspring.model.Atendente;
-
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class AtendenteService {
@@ -19,47 +17,78 @@ public class AtendenteService {
     }
 
     // Cadastrar um novo atendente
-    public String cadastrar(Atendente atendente) throws ExecutionException, InterruptedException {
+    public Mono<String> cadastrar(Atendente atendente) {
         atendente.setId(null); // Garante que Firestore gere o ID automaticamente
-        ApiFuture<DocumentReference> future = firestore.collection("atendentes").add(atendente);
-        return future.get().getId(); // Retorna o ID gerado
+        return Mono.defer(() -> Mono.fromCallable(() -> {
+            ApiFuture<DocumentReference> future = firestore.collection("atendentes").add(atendente);
+            return future.get().getId(); // Retorna o ID gerado
+        }));
     }
 
     // Buscar um atendente por email
-    public Atendente buscarPorEmail(String email) throws ExecutionException, InterruptedException {
+    public Mono<Atendente> buscarPorEmail(String email) {
         CollectionReference atendentes = firestore.collection("atendentes");
         Query query = atendentes.whereEqualTo("email", email);
-        ApiFuture<QuerySnapshot> querySnapshot = query.get();
-
-        for (QueryDocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            return document.toObject(Atendente.class);
-        }
-        return null; // Ou lançar uma exceção
+        return Mono.defer(() -> Mono.fromCallable(() -> {
+            ApiFuture<QuerySnapshot> querySnapshot = query.get();
+            for (QueryDocumentSnapshot document : querySnapshot.get().getDocuments()) {
+                return document.toObject(Atendente.class);
+            }
+            return null; // Ou lançar uma exceção
+        }));
     }
 
     // Buscar um atendente por login
-    public Atendente buscarPorLogin(String login) throws ExecutionException, InterruptedException {
+    public Mono<Atendente> buscarPorLogin(String login) {
         CollectionReference atendentes = firestore.collection("atendentes");
         Query query = atendentes.whereEqualTo("login", login);
-        ApiFuture<QuerySnapshot> querySnapshot = query.get();
-
-        for (QueryDocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            return document.toObject(Atendente.class);
-        }
-        return null; // Ou lançar uma exceção
+        return Mono.defer(() -> Mono.fromCallable(() -> {
+            ApiFuture<QuerySnapshot> querySnapshot = query.get();
+            for (QueryDocumentSnapshot document : querySnapshot.get().getDocuments()) {
+                return document.toObject(Atendente.class);
+            }
+            return null; // Ou lançar uma exceção
+        }));
     }
 
-    // Atualizar um atendente
-    public boolean atualizar(String id, Atendente atendenteAtualizado) throws ExecutionException, InterruptedException {
+    public Mono<Boolean> atualizar(String id, Atendente atendenteAtualizado) {
         DocumentReference docRef = firestore.collection("atendentes").document(id);
-        ApiFuture<WriteResult> writeResult = docRef.set(atendenteAtualizado);
-        return writeResult.get() != null;
+
+        return Mono.fromCallable(() -> {
+            // Verificar se o documento existe antes de tentar atualizar
+            ApiFuture<DocumentSnapshot> future = docRef.get();
+            DocumentSnapshot documentSnapshot = future.get();
+
+            if (documentSnapshot.exists()) {
+                // Atualizar o documento se ele existir
+                ApiFuture<WriteResult> writeResult = docRef.set(atendenteAtualizado);
+                return writeResult.get() != null; // Retorna true se a atualização foi bem-sucedida
+            } else {
+                return false; // Retorna false se o documento não existir
+            }
+        });
     }
 
-    // Deletar um atendente
-    public boolean deletar(String id) throws ExecutionException, InterruptedException {
+
+
+    public Mono<Boolean> deletar(String id) {
         DocumentReference docRef = firestore.collection("atendentes").document(id);
-        ApiFuture<WriteResult> writeResult = docRef.delete();
-        return writeResult.get() != null;
+
+        return Mono.fromCallable(() -> {
+            // Verificar se o documento existe antes de tentar deletar
+            ApiFuture<DocumentSnapshot> future = docRef.get();
+            DocumentSnapshot documentSnapshot = future.get();
+
+            if (documentSnapshot.exists()) {
+                // Se o documento existir, deleta
+                ApiFuture<WriteResult> writeResult = docRef.delete();
+                writeResult.get(); // Executa a operação de exclusão
+                return true; // Retorna true se a exclusão foi bem-sucedida
+            } else {
+                return false; // Se o documento não existir, retorna false
+            }
+        });
     }
+
+
 }
