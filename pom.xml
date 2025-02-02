@@ -46,21 +46,24 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Dependências para Firestore -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-gcp-data-firestore</artifactId>
-			<version>1.2.8.RELEASE</version>
+			<artifactId>spring-cloud-gcp-starter-data-firestore</artifactId>
+			<version>1.2.8.RELEASE</version> <!-- Certifique-se de que essa versão seja compatível -->
 		</dependency>
 
 		<dependency>
@@ -75,12 +78,7 @@
 			<version>3.23.1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>spring-cloud-gcp-data-firestore</artifactId>
-			<version>5.5.0</version>
-		</dependency>
-
+		<!-- Dependências para validação -->
 		<dependency>
 			<groupId>jakarta.validation</groupId>
 			<artifactId>jakarta.validation-api</artifactId>
@@ -93,8 +91,8 @@
 			<version>8.0.1.Final</version>
 		</dependency>
 
-
 	</dependencies>
+
 
 	<build>
 		<plugins>

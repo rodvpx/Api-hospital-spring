@@ -6,7 +6,6 @@ import lombok.Data;
 import org.springframework.cloud.gcp.data.firestore.Document;
 import com.google.cloud.firestore.annotation.DocumentId;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -23,9 +22,8 @@ public class Paciente {
     @NotBlank(message = "O nome não pode estar em branco")
     private String nome;
 
-    @NotNull(message = "A data de nascimento não pode ser nula")
-    @Past(message = "A data de nascimento deve ser no passado")
-    private LocalDate dataNascimento;
+    @NotBlank(message = "A data de nascimento não pode estar em branco")
+    private String dataNascimento;  // Alterado para String
 
     @NotNull(message = "O sexo não pode ser nulo")
     private Sexo sexo;
@@ -45,7 +43,7 @@ public class Paciente {
 
 
     @Data
-    public class Endereco {
+    public static class Endereco {
 
         @NotBlank(message = "A rua não pode estar em branco")
         private String rua;
@@ -58,15 +56,21 @@ public class Paciente {
 
         @NotBlank(message = "O CEP não pode estar em branco")
         private String cep;
+
+        public Endereco() {
+        }
     }
 
     @Data
-    public class ContatoEmergencia {
+    public static class ContatoEmergencia {
 
         @NotBlank(message = "O nome do contato de emergência não pode estar em branco")
         private String nome;
 
         @NotBlank(message = "O telefone do contato de emergência não pode estar em branco")
         private String telefone;
+
+        public ContatoEmergencia() {
+        }
     }
 }

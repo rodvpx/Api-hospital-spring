@@ -2,7 +2,6 @@ package rodvpx.com.github.apihospitalspring.service;
 
 import com.google.cloud.firestore.*;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import rodvpx.com.github.apihospitalspring.model.Atendente;
 
