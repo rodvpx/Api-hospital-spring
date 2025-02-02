@@ -61,7 +61,7 @@ public class AtendenteController {
     // Listar atendentes
     @GetMapping("/listar")
     public Flux<ResponseEntity<Atendente>> listar() {
-        return atendenteService.listar()
+        return atendenteService.listar(Atendente.class)
                 .map(ResponseEntity::ok)
                 .switchIfEmpty(Flux.just(ResponseEntity.noContent().build())); // Retorna 204 se não houver atendentes
     }
