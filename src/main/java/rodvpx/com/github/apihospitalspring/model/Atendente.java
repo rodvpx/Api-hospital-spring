@@ -1,9 +1,11 @@
 package rodvpx.com.github.apihospitalspring.model;
 
-import com.google.cloud.firestore.annotation.DocumentId;
-import com.google.cloud.spring.data.firestore.Document;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.springframework.cloud.gcp.data.firestore.Document;
+import com.google.cloud.firestore.annotation.DocumentId;
 
 import java.util.List;
 
@@ -11,19 +13,25 @@ import java.util.List;
 @Document(collectionName = "atendentes")
 public class Atendente {
 
-        @DocumentId // Firestore vai gerar o ID automaticamente
+        @DocumentId
         private String id;
 
-        @NotBlank
+        @NotBlank(message = "O nome não pode estar em branco")
         private String nome;
-        @NotBlank
+
+        @NotBlank(message = "O CPF não pode estar em branco")
+        @Size(min = 11, max = 11, message = "O CPF deve ter 11 dígitos")
         private String cpf;
-        @NotBlank
+
+        @NotBlank(message = "O email não pode estar em branco")
         private String email;
-        @NotBlank
+
+        @NotEmpty(message = "A lista de telefones não pode estar vazia") // Aqui está a correção
         private List<String> telefones;
-        @NotBlank
+
+        @NotBlank(message = "O login não pode estar em branco")
         private String login;
-        @NotBlank
+
+        @NotBlank(message = "A senha não pode estar em branco")
         private String senha;
 }
