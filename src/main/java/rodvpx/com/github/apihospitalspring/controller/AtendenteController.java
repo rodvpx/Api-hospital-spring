@@ -1,8 +1,10 @@
 package rodvpx.com.github.apihospitalspring.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import rodvpx.com.github.apihospitalspring.model.Atendente;
 import rodvpx.com.github.apihospitalspring.service.AtendenteService;
@@ -27,7 +29,7 @@ public class AtendenteController {
     }
 
     // Endpoint para buscar um atendente por email
-    @GetMapping("/buscar-por-email")
+    @GetMapping("/email")
     public Mono<ResponseEntity<Atendente>> buscarPorEmail(@RequestParam String email) {
         return atendenteService.buscarPorEmail(email)
                 .map(atendente -> ResponseEntity.ok(atendente))
@@ -35,7 +37,7 @@ public class AtendenteController {
     }
 
     // Endpoint para buscar um atendente por login
-    @GetMapping("/buscar-por-login")
+    @GetMapping("/login")
     public Mono<ResponseEntity<Atendente>> buscarPorLogin(@RequestParam String login) {
         return atendenteService.buscarPorLogin(login)
                 .map(atendente -> ResponseEntity.ok(atendente))
@@ -70,6 +72,12 @@ public class AtendenteController {
                 })
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Boolean.FALSE))); // Se o Mono estiver vazio, retorna 404 e Boolean.FALSE
     }
+
+    @GetMapping("/listar")
+    public Flux<Atendente> listar() {
+        return atendenteService.listar();
+    }
+
 
 
 }

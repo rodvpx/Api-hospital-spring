@@ -3,6 +3,7 @@ package rodvpx.com.github.apihospitalspring.service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import rodvpx.com.github.apihospitalspring.model.Atendente;
 
@@ -88,6 +89,13 @@ public class AtendenteService {
                 return false; // Se o documento não existir, retorna false
             }
         });
+    }
+
+    public Flux<Atendente> listar() {
+        return Mono.fromCallable(() -> firestore.collection("atendentes").get().get()) // Busca todos os atendentes
+                .flatMapMany(querySnapshot -> Flux.fromIterable(querySnapshot.getDocuments())
+                        .map(document -> document.toObject(Atendente.class)) // Converte documentos para Atendente
+                );
     }
 
 
