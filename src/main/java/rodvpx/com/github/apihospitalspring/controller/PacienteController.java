@@ -25,10 +25,9 @@ public class PacienteController {
     // Cadastrar paciente
     @PostMapping("/cadastrar")
     public Mono<ResponseEntity<String>> cadastrar(@Valid @RequestBody Paciente paciente) {
-        return pacienteService.cadastrar(paciente)
-                .map(id -> ResponseEntity.status(201).body(id))
-                .onErrorResume(e -> Mono.just(ResponseEntity.status(500).body("Erro ao cadastrar paciente")));
+        return pacienteService.cadastrarPaciente(paciente);
     }
+
 
     // buscar por nome
     @GetMapping("/nome")

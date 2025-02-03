@@ -1,9 +1,13 @@
 package rodvpx.com.github.apihospitalspring.service;
 
 import com.google.cloud.firestore.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import rodvpx.com.github.apihospitalspring.model.Atendente;
+
+import java.util.List;
 
 import static rodvpx.com.github.apihospitalspring.util.ApiFutureUtils.fromApiFuture;
 
@@ -41,6 +45,33 @@ public class AtendenteService extends GenericService<Atendente> {
     @Override
     protected CollectionReference getCollectionReference() {
         return firestore.collection("atendentes");
+    }
+
+    // Verificar se o CPF já existe
+    public Mono<Boolean> verificarCpfExiste(String cpf) {
+        return fromApiFuture(firestore.collection("atendentes")
+                .whereEqualTo("cpf", cpf)
+                .get())
+                .map(querySnapshot -> !querySnapshot.isEmpty())
+                .defaultIfEmpty(false);
+    }
+
+    // Verificar se o Login já existe
+    public Mono<Boolean> verificarLoginExiste(String login) {
+        return fromApiFuture(firestore.collection("atendentes")
+                .whereEqualTo("login", login)
+                .get())
+                .map(querySnapshot -> !querySnapshot.isEmpty())
+                .defaultIfEmpty(false);
+    }
+
+    // Verificar se o Email já existe
+    public Mono<Boolean> verificarEmailExiste(String email) {
+        return fromApiFuture(firestore.collection("atendentes")
+                .whereEqualTo("email", email)
+                .get())
+                .map(querySnapshot -> !querySnapshot.isEmpty())
+                .defaultIfEmpty(false);
     }
 
 

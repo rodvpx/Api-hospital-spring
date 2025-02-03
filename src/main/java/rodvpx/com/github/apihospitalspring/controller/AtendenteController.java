@@ -1,6 +1,7 @@
 package rodvpx.com.github.apihospitalspring.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,37 @@ public class AtendenteController {
         this.atendenteService = atendenteService;
     }
 
+    // Cadastrar atendente
     @PostMapping("/cadastrar")
     public Mono<ResponseEntity<String>> cadastrar(@Valid @RequestBody Atendente atendente) {
-        return atendenteService.cadastrar(atendente)
-                .map(id -> ResponseEntity.status(201).body(id))
-                .onErrorResume(e -> Mono.just(ResponseEntity.status(500).body("Erro ao cadastrar atendente")));
+        // Verificando se o CPF já existe
+        return atendenteService.verificarCpfExiste(atendente.getCpf())
+                .flatMap(cpfExiste -> {
+                    if (cpfExiste) {
+                        return Mono.just(ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: CPF já cadastrado!"));
+                    }
+                    // Verificando se o login já existe
+                    return atendenteService.verificarLoginExiste(atendente.getLogin())
+                            .flatMap(loginExiste -> {
+                                if (loginExiste) {
+                                    return Mono.just(ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: Login já em uso!"));
+                                }
+                                // Verificando se o email já existe
+                                return atendenteService.verificarEmailExiste(atendente.getEmail())
+                                        .flatMap(emailExiste -> {
+                                            if (emailExiste) {
+                                                return Mono.just(ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: Email já cadastrado!"));
+                                            }
+                                            // Se todos os campos forem válidos, cadastrar o atendente
+                                            return atendenteService.cadastrar(atendente)
+                                                    .map(id -> ResponseEntity.status(HttpStatus.CREATED).body("Atendente cadastrado com sucesso! ID: " + id));
+                                        });
+                            });
+                })
+                .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar atendente")));
     }
+
+
 
     // Buscar atendente por email
     @GetMapping("/email")

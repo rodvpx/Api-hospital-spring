@@ -2,6 +2,8 @@ package rodvpx.com.github.apihospitalspring.service;
 
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.Firestore;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import rodvpx.com.github.apihospitalspring.model.Atendente;
@@ -47,6 +49,23 @@ public class PacienteService extends GenericService<Paciente> {
         return firestore.collection("pacientes");
     }
 
+    public Mono<ResponseEntity<String>> cadastrarPaciente(Paciente paciente) {
+        return fromApiFuture(firestore.collection("pacientes")
+                .whereEqualTo("cpf", paciente.getCpf()) // Verifica se o CPF já existe
+                .get())
+                .flatMap(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        return Mono.just(ResponseEntity.status(HttpStatus.CONFLICT)
+                                .body("Erro: CPF já cadastrado!"));
+                    }
+
+                    // Se não existir, chamar o método genérico cadastrar() corretamente
+                    return this.cadastrar(paciente)
+                            .map(id -> ResponseEntity.ok("Paciente cadastrado com sucesso! ID: " + id))
+                            .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                    .body("Erro ao cadastrar paciente: " + e.getMessage())));
+                });
+    }
 
 
 }
