@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import rodvpx.com.github.apihospitalspring.model.Atendente;
 import rodvpx.com.github.apihospitalspring.model.Paciente;
 import rodvpx.com.github.apihospitalspring.service.PacienteService;
 
@@ -21,36 +22,21 @@ public class PacienteController {
         this.pacienteService = pacienteService;
     }
 
+    // Cadastrar paciente
     @PostMapping("/cadastrar")
-    public Mono<ResponseEntity<String>> cadastrar(@Valid @RequestBody Paciente paciente, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            StringBuilder errorMessages = new StringBuilder();
-            bindingResult.getAllErrors().forEach(error -> errorMessages.append(error.getDefaultMessage()).append("\n"));
-            return Mono.just(ResponseEntity.badRequest().body(errorMessages.toString()));
-        }
-
+    public Mono<ResponseEntity<String>> cadastrar(@Valid @RequestBody Paciente paciente) {
         return pacienteService.cadastrar(paciente)
-                .map(savedPaciente -> ResponseEntity.ok("Paciente cadastrado com sucesso"))
-                .defaultIfEmpty(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar paciente"));
+                .map(id -> ResponseEntity.status(201).body(id))
+                .onErrorResume(e -> Mono.just(ResponseEntity.status(500).body("Erro ao cadastrar paciente")));
     }
 
-
+    // buscar por nome
     @GetMapping("/nome")
-    public Mono<ResponseEntity<?>> buscarPorNome(@RequestParam String nome) {
+    public Mono<ResponseEntity<Paciente>> buscarPorNome(@RequestParam String nome) {
         return pacienteService.buscarPorNome(nome)
-                .doOnNext(paciente -> System.out.println("Paciente encontrado: " + paciente)) // Log para verificar o paciente encontrado
-                .flatMap(paciente -> {
-                    if (paciente == null) {
-                        return Mono.just(ResponseEntity.notFound().build()); // Retorna 404 caso não encontre o paciente
-                    }
-                    return Mono.just(ResponseEntity.ok(paciente)); // Retorna 200 com o paciente encontrado
-                })
-                .defaultIfEmpty(ResponseEntity.notFound().build()); // Garante que o 404 será retornado caso não encontre nada
+                .map(ResponseEntity::ok) // Retorna o paciente encontrado
+                .defaultIfEmpty(ResponseEntity.notFound().build()); // Retorna 404 caso não encontrado
     }
-
-
-
-
 
 
     // Buscar paciente por CPF
@@ -69,4 +55,19 @@ public class PacienteController {
                 .map(pacientes -> ResponseEntity.ok().body(Flux.fromIterable(pacientes))) // Retorna todos os pacientes
                 .defaultIfEmpty(ResponseEntity.noContent().build()); // Retorna 204 caso não haja pacientes
     }
+
+    // Atualizar paciente
+    @PutMapping("/{id}")
+    public Mono<ResponseEntity<Boolean>> atualizar(@PathVariable String id, @Valid @RequestBody Paciente pacienteAtualizado) {
+        return pacienteService.atualizar(id, pacienteAtualizado)
+                .map(updated -> updated ? ResponseEntity.ok(true) : ResponseEntity.status(404).body(false));
+    }
+
+    // Deletar atendente
+    @DeleteMapping("/{id}")
+    public Mono<ResponseEntity<Boolean>> deletar(@PathVariable String id) {
+        return pacienteService.deletar(id)
+                .map(deleted -> deleted ? ResponseEntity.ok(true) : ResponseEntity.status(404).body(false));
+    }
+
 }

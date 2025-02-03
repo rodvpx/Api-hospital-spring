@@ -43,6 +43,14 @@ public class AtendenteController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
+    // Listar atendentes
+    @GetMapping("/listar")
+    public Flux<ResponseEntity<Atendente>> listar() {
+        return atendenteService.listar(Atendente.class)
+                .map(ResponseEntity::ok)
+                .switchIfEmpty(Flux.just(ResponseEntity.noContent().build())); // Retorna 204 se não houver atendentes
+    }
+
     // Atualizar atendente
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Boolean>> atualizar(@PathVariable String id, @Valid @RequestBody Atendente atendenteAtualizado) {
@@ -58,11 +66,4 @@ public class AtendenteController {
                 .map(deleted -> deleted ? ResponseEntity.ok(true) : ResponseEntity.status(404).body(false));
     }
 
-    // Listar atendentes
-    @GetMapping("/listar")
-    public Flux<ResponseEntity<Atendente>> listar() {
-        return atendenteService.listar(Atendente.class)
-                .map(ResponseEntity::ok)
-                .switchIfEmpty(Flux.just(ResponseEntity.noContent().build())); // Retorna 204 se não houver atendentes
-    }
 }
