@@ -1,13 +1,10 @@
 package rodvpx.com.github.apihospitalspring.service;
 
 import com.google.cloud.firestore.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import rodvpx.com.github.apihospitalspring.model.Atendente;
 
-import java.util.List;
 
 import static rodvpx.com.github.apihospitalspring.util.ApiFutureUtils.fromApiFuture;
 
