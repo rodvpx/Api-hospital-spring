@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import rodvpx.com.github.apihospitalspring.model.Atendente;
 import rodvpx.com.github.apihospitalspring.model.Paciente;
 
 import static rodvpx.com.github.apihospitalspring.util.ApiFutureUtils.fromApiFuture;
@@ -66,6 +65,15 @@ public class PacienteService extends GenericService<Paciente> {
                                     .body("Erro ao cadastrar paciente: " + e.getMessage())));
                 });
     }
+
+    public Mono<Boolean> verificarPacienteExistente(String pacienteId) {
+        return fromApiFuture(firestore.collection("pacientes")
+                .whereEqualTo("id", pacienteId) // Faz a busca pelo ID do paciente
+                .get())
+                .map(querySnapshot -> !querySnapshot.isEmpty()) // Retorna true se encontrar o paciente
+                .defaultIfEmpty(false); // Retorna false se o paciente não existir
+    }
+
 
 
 }

@@ -71,5 +71,14 @@ public class AtendenteService extends GenericService<Atendente> {
                 .defaultIfEmpty(false);
     }
 
+    public Mono<Boolean> verificarAtendenteExistente(String atendenteId) {
+        return fromApiFuture(firestore.collection("atendentes")
+                .whereEqualTo("id", atendenteId) // Faz a busca pelo ID do atendente
+                .get())
+                .map(querySnapshot -> !querySnapshot.isEmpty()) // Retorna true se encontrar o atendente
+                .defaultIfEmpty(false); // Retorna false se o atendente não existir
+    }
+
+
 
 }

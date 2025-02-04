@@ -31,4 +31,6 @@ public class ConsultaService extends GenericService<Consulta> {
     }
 
 
+
+
 }

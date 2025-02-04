@@ -15,8 +15,8 @@ public class Consulta {
     @NotBlank(message = "O ID do paciente não pode estar em branco")
     private String pacienteId;
 
-    @NotBlank(message = "O CRM do médico não pode estar em branco")
-    private String medicoCrm;
+    @NotBlank(message = "O ID do médico não pode estar em branco")
+    private String medicoId;
 
     @NotBlank(message = "O ID do atendente não pode estar em branco")
     private String atendenteId;

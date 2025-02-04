@@ -1,13 +1,10 @@
 package rodvpx.com.github.apihospitalspring.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import rodvpx.com.github.apihospitalspring.model.Atendente;
 import rodvpx.com.github.apihospitalspring.model.Paciente;
 import rodvpx.com.github.apihospitalspring.service.PacienteService;
 

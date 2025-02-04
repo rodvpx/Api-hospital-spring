@@ -57,4 +57,13 @@ public class MedicoService extends GenericService<Medico> {
                                         .body("Erro ao cadastrar médico")))
                 );
     }
+
+    public Mono<Boolean> verificarMedicoExistente(String medicoId) {
+        return fromApiFuture(firestore.collection("medicos")
+                .whereEqualTo("id", medicoId) // Faz a busca pelo ID do médico
+                .get())
+                .map(querySnapshot -> !querySnapshot.isEmpty()) // Retorna true se encontrar o médico
+                .defaultIfEmpty(false); // Retorna false se o médico não existir
+    }
+
 }
