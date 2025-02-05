@@ -26,7 +26,7 @@ public class Atendente {
         @NotBlank(message = "O email não pode estar em branco")
         private String email;
 
-        @NotEmpty(message = "A lista de telefones não pode estar vazia") // Aqui está a correção
+        @NotEmpty(message = "A lista de telefones não pode estar vazia")
         private List<String> telefones;
 
         @NotBlank(message = "O login não pode estar em branco")
@@ -35,3 +35,4 @@ public class Atendente {
         @NotBlank(message = "A senha não pode estar em branco")
         private String senha;
 }
+

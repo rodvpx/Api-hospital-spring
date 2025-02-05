@@ -19,7 +19,7 @@ public class MedicoService extends GenericService<Medico> {
 
     @Override
     protected CollectionReference getCollectionReference() {
-        return firestore.collection("medicos"); // Referência para a coleção "medicos" no Firestore
+        return firestore.collection("medicos");
     }
 
     // Buscar médico por CRM

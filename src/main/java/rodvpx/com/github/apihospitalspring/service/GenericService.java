@@ -14,7 +14,7 @@ public abstract class GenericService<T> {
     @Autowired
     protected Firestore firestore; // Injetando Firestore
 
-    // Método abstrato para obter a coleção do Firestore (deve ser implementado nas subclasses)
+    // Método abstrato para obter a coleção do Firestore
     protected abstract CollectionReference getCollectionReference();
 
     // Método genérico para cadastrar qualquer modelo

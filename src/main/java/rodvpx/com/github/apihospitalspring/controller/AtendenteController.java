@@ -25,8 +25,7 @@ public class AtendenteController {
     @PostMapping("/cadastrar")
     public Mono<ResponseEntity<String>> cadastrar(@Valid @RequestBody Atendente atendente) {
         // Verificando se o CPF já existe
-        return atendenteService.verificarCpfExiste(atendente.getCpf())
-                .flatMap(cpfExiste -> {
+        return atendenteService.verificarCpfExiste(atendente.getCpf()).flatMap(cpfExiste -> {
                     if (cpfExiste) {
                         return Mono.just(ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: CPF já cadastrado!"));
                     }
@@ -50,7 +49,6 @@ public class AtendenteController {
                 })
                 .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar atendente")));
     }
-
 
 
     // Buscar atendente por email

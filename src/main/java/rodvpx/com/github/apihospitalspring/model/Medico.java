@@ -5,7 +5,6 @@ import lombok.Data;
 import org.springframework.cloud.gcp.data.firestore.Document;
 import com.google.cloud.firestore.annotation.DocumentId;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data

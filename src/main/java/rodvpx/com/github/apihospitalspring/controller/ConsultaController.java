@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import rodvpx.com.github.apihospitalspring.model.Consulta;
-import rodvpx.com.github.apihospitalspring.model.Medico;
 import rodvpx.com.github.apihospitalspring.service.AtendenteService;
 import rodvpx.com.github.apihospitalspring.service.ConsultaService;
 import rodvpx.com.github.apihospitalspring.service.MedicoService;

@@ -11,11 +11,9 @@ import static rodvpx.com.github.apihospitalspring.util.ApiFutureUtils.fromApiFut
 public class HistoricoMedicoService extends GenericService<HistoricoMedico> {
 
     private final Firestore firestore;
-    private final ConsultaService consultaService;
 
-    public HistoricoMedicoService(Firestore firestore, ConsultaService consultaService) {
+    public HistoricoMedicoService(Firestore firestore) {
         this.firestore = firestore;
-        this.consultaService = consultaService;
     }
 
     @Override
